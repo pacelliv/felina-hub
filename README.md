@@ -1,10 +1,10 @@
 # Felina Hub
 
-<img src="./public/site-screenshot.PNG" />
+<img src="./public/site-screenshot.png" />
 
-### 🌟🌟 Live Demo: https://super-sun-3424.on.fleek.co/ (The mounting is a bit funky, sorry!)
+### 🌟🌟 Live Demo: https://delicate-king-3594.on.fleek.co/ (The mounting is a bit funky, sorry!)
 
-### 💥💥 ipfs://Qmb83Coh2iWQCemnsbSb6cGHeM8vvg2DJwhom8HgBb28wJ
+### 💥💥 ipfs://QmSgRCBe2thhmZMjkoCqYicE42QtEgfUg5CAhzgFWUWWCF
 
 ### ✨✨ Check the smart contracts [here](https://github.com/pacelliv/felina-erc20-token)
 
