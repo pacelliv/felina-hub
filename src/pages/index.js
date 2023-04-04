@@ -466,7 +466,12 @@ const Home = () => {
     const [isConfirmed, setIsConfirmed] = useState(false)
     const [data, setData] = useState("")
     const [message, setMessage] = useState("")
-    const [logs, setLogs] = useState("")
+    const [logs, setLogs] = useState({
+        sepoliaFaucetDripAmount: "",
+        balanceSepolia: "",
+        mumbaiFaucetDripAmount: "",
+        balanceMumbai: "",
+    })
 
     const handleChange = (event) => {
         setAddress(event.target.value)
@@ -491,7 +496,12 @@ const Home = () => {
         setIsLoading(true)
         try {
             const data = await getFaucetsBalances()
-            setLogs(data)
+            setLogs({
+                sepoliaFaucetDripAmount: data.sepoliaFaucetDripAmount,
+                balanceSepolia: data.balanceSepolia,
+                mumbaiFaucetDripAmount: data.mumbaiFaucetDripAmount,
+                balanceMumbai: data.balanceMumbai,
+            })
         } catch (error) {
             console.log(error)
         } finally {
@@ -641,7 +651,7 @@ const Home = () => {
                             {isLoading ? (
                                 <div className="spinner"></div>
                             ) : (
-                                logs.balanceSepolia.slice(0, -18) + " FEL"
+                                `${logs.balanceSepolia.slice(0, -18)} FEL`
                             )}
                         </li>
                     </ul>
@@ -665,7 +675,7 @@ const Home = () => {
                             {isLoading ? (
                                 <div className="spinner"></div>
                             ) : (
-                                logs.balanceMumbai.slice(0, -18) + " FEL"
+                                `${logs.balanceMumbai.slice(0, -18)} FEL`
                             )}
                         </li>
                     </ul>
@@ -720,9 +730,9 @@ const Home = () => {
                     <button
                         id="claim-button"
                         disabled={
-                            !isWeb3Enabled ||
-                            (logs.sepoliaFaucetDripAmount === "0" &&
-                                logs.mumbaiFaucetDripAmount === "0")
+                            !isWeb3Enabled //||
+                            // (logs.sepoliaFaucetDripAmount === "0" &&
+                            //     logs.mumbaiFaucetDripAmount === "0")
                         }
                         className="claim-button"
                         onClick={claimTokens}
