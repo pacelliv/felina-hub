@@ -7,6 +7,7 @@ import { FaAddressCard } from "react-icons/fa"
 import { useState } from "react"
 import Modal from "../components/Modal"
 import Meta from "../components/Meta"
+import { getFaucetsBalances } from "../fetchData"
 
 const Container = styled.div`
     padding: 0 0.8em 3em;
@@ -456,14 +457,17 @@ const Container = styled.div`
         }
     }
 `
-const Home = ({ faucetData }) => {
+const Home = () => {
     const { chainId, enableWeb3, isWeb3Enabled } = useContext(Web3Context)
+    const [isLoading, setIsLoading] = useState(false)
     const [address, setAddress] = useState("")
     const [isActive, setIsActive] = useState(false)
     const [isOpen, setIsOpen] = useState(false)
     const [isConfirmed, setIsConfirmed] = useState(false)
     const [data, setData] = useState("")
     const [message, setMessage] = useState("")
+    const [logs, setLogs] = useState({})
+    console.log(typeof logs.balanceSepolia)
 
     const handleChange = (event) => {
         setAddress(event.target.value)
@@ -484,20 +488,17 @@ const Home = ({ faucetData }) => {
         setIsOpen(!isOpen)
     }
 
-    useEffect(() => {
-        const handleClick = (event) => {
-            if (event.target.id === "input-address") {
-                setIsActive(true)
-            } else {
-                setIsActive(false)
-            }
+    const updateUI = async () => {
+        setIsLoading(true)
+        try {
+            const data = await getFaucetsBalances()
+            setLogs(data)
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setIsLoading(false)
         }
-        window.addEventListener("click", handleClick)
-    }, [isActive])
-
-    useEffect(() => {
-        if (message) setTimeout(() => setMessage(""), 10000)
-    }, [message])
+    }
 
     const claimTokens = () => {
         const regex = /[0-9A-Fa-f]{6}/g
@@ -507,8 +508,7 @@ const Home = ({ faucetData }) => {
             fetch("https://felina-api2.p.rapidapi.com/v1/api/request", {
                 method: "POST",
                 headers: {
-                    "X-RapidAPI-Key":
-                        "a9a16c6010msh2784255d22276cep1db7b2jsn0061440860ef",
+                    "X-RapidAPI-Key": process.env.NEXT_PUBLIC_X_RAPID_API_KEY,
                     "X-RapidAPI-Host": "felina-api2.p.rapidapi.com",
                     "Content-Type": "application/json",
                 },
@@ -534,6 +534,29 @@ const Home = ({ faucetData }) => {
             setMessage("Please insert a valid address.")
         }
     }
+
+    useEffect(() => {
+        const handleClick = (event) => {
+            if (event.target.id === "input-address") {
+                setIsActive(true)
+            } else {
+                setIsActive(false)
+            }
+        }
+        window.addEventListener("click", handleClick)
+    }, [isActive])
+
+    useEffect(() => {
+        try {
+            updateUI()
+        } catch (error) {
+            console.log(error)
+        }
+    }, [chainId])
+
+    useEffect(() => {
+        if (message) setTimeout(() => setMessage(""), 10000)
+    }, [message])
 
     return (
         <Container chainId={chainId} isActive={isActive}>
@@ -608,8 +631,20 @@ const Home = ({ faucetData }) => {
                             )}
                             Ethereum: Sepolia Testnet
                         </li>
-                        <li>{faucetData.sepoliaFaucetDripAmount} FEL</li>
-                        <li>{faucetData.balanceSepolia.slice(0, -18)} FEL</li>
+                        <li>
+                            {isLoading ? (
+                                <div className="spinner"></div>
+                            ) : (
+                                logs.sepoliaFaucetDripAmount + " FEL"
+                            )}
+                        </li>
+                        <li>
+                            {isLoading ? (
+                                <div className="spinner"></div>
+                            ) : (
+                                logs.balanceSepolia.slice(0, -18) + " FEL"
+                            )}
+                        </li>
                     </ul>
                     <ul className="mumbai">
                         <li>
@@ -620,8 +655,20 @@ const Home = ({ faucetData }) => {
                             )}{" "}
                             Polygon: Mumbai Testnet
                         </li>
-                        <li>{faucetData.mumbaiFaucetDripAmount} FEL</li>
-                        <li>{faucetData.balanceMumbai.slice(0, -18)} FEL</li>
+                        <li>
+                            {isLoading ? (
+                                <div className="spinner"></div>
+                            ) : (
+                                logs.mumbaiFaucetDripAmount + " FEL"
+                            )}
+                        </li>
+                        <li>
+                            {isLoading ? (
+                                <div className="spinner"></div>
+                            ) : (
+                                logs.balanceMumbai.slice(0, -18) + " FEL"
+                            )}
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -675,8 +722,8 @@ const Home = ({ faucetData }) => {
                         id="claim-button"
                         disabled={
                             !isWeb3Enabled ||
-                            (faucetData.sepoliaFaucetDripAmount === "0" &&
-                                faucetData.mumbaiFaucetDripAmount === "0")
+                            (logs.sepoliaFaucetDripAmount === "0" &&
+                                logs.mumbaiFaucetDripAmount === "0")
                         }
                         className="claim-button"
                         onClick={claimTokens}
@@ -687,37 +734,6 @@ const Home = ({ faucetData }) => {
             </div>
         </Container>
     )
-}
-
-export const getStaticProps = async () => {
-    try {
-        const res = await fetch(
-            "https://felina-api2.p.rapidapi.com/v1/api/faucets",
-            {
-                method: "GET",
-                headers: {
-                    "X-RapidAPI-Key": process.env.NEXT_PUBLIC_X_RAPID_API_KEY,
-                    "X-RapidAPI-Host": "felina-api2.p.rapidapi.com",
-                },
-            }
-        )
-        if (!res.ok) {
-            throw {
-                message: "Failed to fetch balances",
-                statusText: res.statusText,
-                status: res.status,
-            }
-        }
-        const faucetData = await res.json()
-
-        return {
-            props: {
-                faucetData,
-            },
-        }
-    } catch (error) {
-        console.log(error)
-    }
 }
 
 export default Home
