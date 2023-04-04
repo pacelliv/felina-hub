@@ -466,8 +466,7 @@ const Home = () => {
     const [isConfirmed, setIsConfirmed] = useState(false)
     const [data, setData] = useState("")
     const [message, setMessage] = useState("")
-    const [logs, setLogs] = useState({})
-    console.log(typeof logs.balanceSepolia)
+    const [logs, setLogs] = useState("")
 
     const handleChange = (event) => {
         setAddress(event.target.value)
