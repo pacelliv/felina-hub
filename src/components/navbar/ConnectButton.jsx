@@ -46,8 +46,8 @@ const ConnectButton = () => {
     // if it exist set a new Item to localStorage
     const connectWallet = async () => {
         const wallet = await enableWeb3()
-        if (typeof wallet != "undefined") {
-            if (typeof window.ethereum != "undefined") {
+        if (typeof wallet !== "undefined") {
+            if (typeof window !== "undefined") {
                 window.localStorage.setItem("connected", "injected")
             }
         }
@@ -58,7 +58,7 @@ const ConnectButton = () => {
     useEffect(() => {
         if (
             !isWeb3Enabled &&
-            typeof window.ethereum != "undefined" &&
+            typeof window !== "undefined" &&
             window.localStorage.getItem("connected")
         ) {
             enableWeb3()
