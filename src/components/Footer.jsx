@@ -20,6 +20,9 @@ const Container = styled.div`
         font-family: "Permanent Marker", cursive;
         font-weight: 600;
         letter-spacing: 2px;
+        pointer-events: ${({ isOpen }) => isOpen && "none"};
+        cursor: ${({ isOpen }) => isOpen && "default"};
+        opacity: ${({ isOpen }) => isOpen && "0.5"};
     }
 
     .social-media {
@@ -27,6 +30,12 @@ const Container = styled.div`
         align-items: center;
         justify-content: space-between;
         gap: 20px;
+    }
+
+    .link {
+        pointer-events: ${({ isOpen }) => isOpen && "none"};
+        cursor: ${({ isOpen }) => isOpen && "default"};
+        opacity: ${({ isOpen }) => isOpen && "0.5"};
     }
 
     .box {
@@ -72,9 +81,9 @@ const Container = styled.div`
     }
 `
 
-const Footer = () => {
+const Footer = ({ isOpen }) => {
     return (
-        <Container className="footer">
+        <Container className="footer" isOpen={isOpen}>
             <Link href="/" className="footer-logo">
                 By Pacelliv
             </Link>
@@ -82,7 +91,7 @@ const Footer = () => {
                 <a
                     href="https://github.com/pacelliv"
                     target="_blank"
-                    className="github-link"
+                    className="link"
                 >
                     <div className="box yellow">
                         <FaGithub className="icon" />
@@ -92,7 +101,7 @@ const Footer = () => {
                 <a
                     href="https://twitter.com/pacelliv3"
                     target="_blank"
-                    className="twitter-link"
+                    className="link"
                 >
                     <div className="box pink">
                         <SiTwitter className="icon" />
@@ -102,7 +111,7 @@ const Footer = () => {
                 <a
                     href="/mailto:flores.eugenio03@gmail.com"
                     target="_blank"
-                    className="email-link"
+                    className="link"
                 >
                     <div className="box lightblue">
                         <MdOutlineMail className="icon" />

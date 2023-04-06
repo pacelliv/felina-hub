@@ -1,11 +1,11 @@
 import styled from "styled-components"
 import { useEffect, useContext } from "react"
 import { Web3Context } from "../../Web3Context"
-import { CiSettings } from "react-icons/ci"
 import { AiOutlineSetting } from "react-icons/ai"
 
 const Container = styled.div`
     position: relative;
+    opacity: ${({ modalIsOpen }) => modalIsOpen && "0.5"};
 
     .dropdown {
         width: 230px;
@@ -75,17 +75,16 @@ const Button = styled.button`
     display: flex;
     align-items: center;
     gap: 10px;
-    cursor: pointer;
     font-family: inherit;
     font-size: 0.85rem;
     color: white;
-    box-shadow: 0px 0px 5px -1px #fff;
     transition: hover 0.5s ease;
     background-color: #1c1c1c;
+    box-shadow: 0 0px 5px -1px #fff;
+    cursor: ${({ modalIsOpen }) => (modalIsOpen ? "default" : "pointer")};
 
-    &:hover {
+    &:hover:not([disabled]) {
         border: 1px solid transparent;
-        box-shadow: unset;
         color: #1c1c1c;
         background-color: white;
     }
@@ -100,7 +99,11 @@ const Button = styled.button`
     }
 `
 
-const SwitchChainButton = ({ dropdownNetwork, setDropdownNetwork }) => {
+const SwitchChainButton = ({
+    dropdownNetwork,
+    setDropdownNetwork,
+    modalIsOpen,
+}) => {
     const { chainIdHex, chainId, isWeb3Enabled } = useContext(Web3Context)
 
     const switchChain = async (_chainIdHex, _name, _rcpUrl) => {
@@ -166,11 +169,12 @@ const SwitchChainButton = ({ dropdownNetwork, setDropdownNetwork }) => {
     }, [dropdownNetwork])
 
     return (
-        <Container className="container-wrapper">
+        <Container modalIsOpen={modalIsOpen}>
             <Button
                 id="button"
                 onClick={() => setDropdownNetwork(!dropdownNetwork)}
-                disabled={!isWeb3Enabled}
+                disabled={!isWeb3Enabled || modalIsOpen}
+                modalIsOpen={modalIsOpen}
             >
                 <AiOutlineSetting className="button-logo" />
                 &#x25bc;

@@ -18,7 +18,7 @@ const Container = styled.div`
     color: whitesmoke;
     height: 500px;
     z-index: 99;
-    box-shadow: 0px 0px 6px 2px #666;
+    box-shadow: 0px 0px 15px 6px #d0d0d0;
     overflow-x: hidden;
     overflow-y: hidden;
 

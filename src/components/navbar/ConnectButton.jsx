@@ -11,15 +11,16 @@ const Button = styled.button`
     display: flex;
     align-items: center;
     gap: 10px;
-    cursor: pointer;
     font-family: inherit;
     font-size: 0.85rem;
     color: white;
-    box-shadow: 0 0px 5px -1px #fff;
     transition: hover 0.5s ease;
     background-color: #1c1c1c;
+    box-shadow: 0 0px 5px -1px #fff;
+    cursor: ${({ modalIsOpen }) => (modalIsOpen ? "default" : "pointer")};
+    opacity: ${({ modalIsOpen }) => modalIsOpen && "0.5"};
 
-    &:hover {
+    &:hover:not([disabled]) {
         border: 1px solid transparent;
         box-shadow: unset;
         color: #1c1c1c;
@@ -31,7 +32,7 @@ const Button = styled.button`
     }
 `
 
-const ConnectButton = () => {
+const ConnectButton = ({ modalIsOpen }) => {
     const {
         enableWeb3,
         isWeb3EnableLoading,
@@ -78,7 +79,11 @@ const ConnectButton = () => {
     }, [])
 
     return (
-        <Button onClick={connectWallet} disabled={isWeb3EnableLoading}>
+        <Button
+            onClick={connectWallet}
+            disabled={isWeb3EnableLoading || modalIsOpen}
+            modalIsOpen={modalIsOpen}
+        >
             {isWeb3Enabled ? (
                 <Jazzicon diameter={20} seed={jsNumberForAddress(account)} />
             ) : (

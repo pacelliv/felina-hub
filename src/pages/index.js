@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { useContext, useEffect } from "react"
 import { Web3Context } from "../Web3Context"
+import { ThemeContext } from "../ThemeContext"
 import styled from "styled-components"
 import { BsArrowRightCircle, BsCircle, BsCircleFill } from "react-icons/bs"
 import { FaAddressCard } from "react-icons/fa"
@@ -12,6 +13,15 @@ import { getFaucetsBalances } from "../fetchData"
 const Container = styled.div`
     padding: 0 0.8em 3em;
     margin: 0 auto;
+
+    .modal-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0,0,0,0.4);
+    }
 
     .home-top {
         display: flex;
@@ -47,6 +57,8 @@ const Container = styled.div`
         gap: 10px;
         align-self: end;
         padding: 0.5em;
+        pointer-events: ${({ isOpen }) => isOpen && "none"};
+        cursor: ${({ isOpen }) => isOpen && "default"};
     }
 
     .home-link-text {
@@ -146,7 +158,7 @@ const Container = styled.div`
         height: 46px;
         padding: 35px 22px 35px 10px;
         background-color: ${({ chainId }) =>
-            String(chainId) === "11155111" ? "#E1F8FF" : "#fff"};
+            String(chainId) === "11155111" ? "#E1F8FF" : "transparent"};
         font-size: 0.8rem;
         opacity: ${({ chainId }) =>
             String(chainId) === "11155111" ? "1" : "0.5"};
@@ -181,7 +193,7 @@ const Container = styled.div`
         height: 46px;
         padding: 35px 22px 35px 10px;
         background-color: ${({ chainId }) =>
-            String(chainId) === "80001" ? "#E1F8FF" : "#fff"};
+            String(chainId) === "80001" ? "#E1F8FF" : "transparent"};
         font-size: 0.8rem;
         opacity: ${({ chainId }) =>
             String(chainId) === "80001" ? "1" : "0.5"};
@@ -256,7 +268,7 @@ const Container = styled.div`
         font-weight: 400;
         font-size: 13px;
         color: #000000;
-        background-color: #fff;
+        background-color: ${({ isOpen }) => (isOpen ? "transparent" : "#fff")};
         outline: none;
         letter-spacing: 0.2px;
         font-family: monospace;
@@ -458,11 +470,11 @@ const Container = styled.div`
     }
 `
 const Home = () => {
+    const { isOpen, setIsOpen } = useContext(ThemeContext)
     const { chainId, enableWeb3, isWeb3Enabled } = useContext(Web3Context)
     const [isLoading, setIsLoading] = useState(false)
     const [address, setAddress] = useState("")
     const [isActive, setIsActive] = useState(false)
-    const [isOpen, setIsOpen] = useState(false)
     const [isConfirmed, setIsConfirmed] = useState(false)
     const [data, setData] = useState("")
     const [message, setMessage] = useState("")
@@ -568,17 +580,17 @@ const Home = () => {
     }, [message])
 
     return (
-        <Container chainId={chainId} isActive={isActive}>
+        <Container chainId={chainId} isActive={isActive} isOpen={isOpen}>
             <Meta title={"Felina Hub | Faucets"} />
             {isOpen && (
                 <Modal
-                    isOpen={isOpen}
                     data={data}
                     isConfirmed={isConfirmed}
                     closeModal={closeModal}
                     chainId={chainId}
                 />
             )}
+            <div className={isOpen && "modal-backdrop"}></div>
             <div className="home-top">
                 <div className="home-image-container">
                     <img className="home-image" src="../../../VF01455.png" />
@@ -612,6 +624,8 @@ const Home = () => {
                             style={{
                                 color: "#ff006e",
                                 textDecoration: "underline",
+                                pointerEvents: isOpen && "none",
+                                cursor: isOpen && "default",
                             }}
                         >
                             click here
@@ -730,9 +744,10 @@ const Home = () => {
                     <button
                         id="claim-button"
                         disabled={
-                            !isWeb3Enabled //||
-                            // (logs.sepoliaFaucetDripAmount === "0" &&
-                            //     logs.mumbaiFaucetDripAmount === "0")
+                            !isWeb3Enabled ||
+                            (logs.sepoliaFaucetDripAmount === "0" &&
+                                logs.mumbaiFaucetDripAmount === "0") ||
+                            isOpen
                         }
                         className="claim-button"
                         onClick={claimTokens}

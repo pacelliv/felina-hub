@@ -23,6 +23,9 @@ const Nav = styled.div`
         letter-spacing: 2px;
         color: white;
         z-index: 20;
+        pointer-events: ${({ modalIsOpen }) => modalIsOpen && "none"};
+        cursor: ${({ modalIsOpen }) => modalIsOpen && "default"};
+        opacity: ${({ modalIsOpen }) => modalIsOpen && "0.5"};
     }
 
     .navbar-list {
@@ -40,6 +43,8 @@ const Nav = styled.div`
         transition: all 0.4s ease;
         position: relative;
         padding: 1em;
+        pointer-events: ${({ modalIsOpen }) => modalIsOpen && "none"};
+        cursor: ${({ modalIsOpen }) => modalIsOpen && "default"};
     }
 
     .nav-links:hover {
@@ -47,7 +52,7 @@ const Nav = styled.div`
     }
 
     .nav-active {
-        color: white;
+        color: ${({ modalIsOpen }) => (modalIsOpen ? "#c7c7c7" : "white")};
     }
 
     .nav-active::before {
@@ -58,6 +63,7 @@ const Nav = styled.div`
         height: 5px;
         width: 100%;
         background-color: #00ff19;
+        opacity: ${({ modalIsOpen }) => modalIsOpen && "0.5"};
     }
 
     .close-menu,
@@ -154,7 +160,7 @@ const Nav = styled.div`
     }
 `
 
-const Navbar = () => {
+const Navbar = ({ modalIsOpen }) => {
     const [isOpen, setIsOpen] = useState(false)
     const listContainerRef = useRef()
     const [dropdownNetwork, setDropdownNetwork] = useState(false)
@@ -163,7 +169,11 @@ const Navbar = () => {
     const handleClick = () => setIsOpen(!isOpen)
 
     return (
-        <Nav isOpen={isOpen} listContainerRef={listContainerRef}>
+        <Nav
+            modalIsOpen={modalIsOpen}
+            isOpen={isOpen}
+            listContainerRef={listContainerRef}
+        >
             <Link href="/" className="navbar-logo">
                 Felina Hub
             </Link>
@@ -188,12 +198,13 @@ const Navbar = () => {
             </div>
             <div className="container">
                 <div className="buttons-container">
-                    <ConnectButton />
+                    <ConnectButton modalIsOpen={modalIsOpen} />
                 </div>
                 <div className="buttons-container">
                     <SwitchChainButton
                         dropdownNetwork={dropdownNetwork}
                         setDropdownNetwork={setDropdownNetwork}
+                        modalIsOpen={modalIsOpen}
                     />
                 </div>
                 {isOpen ? (

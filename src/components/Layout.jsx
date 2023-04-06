@@ -1,10 +1,13 @@
 import Navbar from "./navbar/Navbar"
 import Footer from "./Footer"
 import styled from "styled-components"
+import { ThemeContext } from "../ThemeContext"
+import { useContext } from "react"
 
 const Div = styled.div`
     min-height: 100vh;
     position: relative;
+    background-color: ${({ isOpen }) => isOpen && "rgba (0,0,0,0.4)"};
 `
 
 const Main = styled.main`
@@ -17,11 +20,13 @@ const Main = styled.main`
 `
 
 const Layout = ({ children }) => {
+    const { isOpen } = useContext(ThemeContext)
+
     return (
-        <Div>
-            <Navbar />
+        <Div isOpen={isOpen}>
+            <Navbar modalIsOpen={isOpen} />
             <Main>{children}</Main>
-            <Footer />
+            <Footer isOpen={isOpen} />
         </Div>
     )
 }
