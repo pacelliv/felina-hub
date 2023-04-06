@@ -231,7 +231,7 @@ const Modal = ({ data, isConfirmed, closeModal, chainId }) => {
                     <p>Transaction initialized</p>
                     <p className="align-right">
                         {isConfirmed
-                            ? "Tokens transfered"
+                            ? "Tokens transferred"
                             : "Waiting confirmations"}
                     </p>
                 </div>
