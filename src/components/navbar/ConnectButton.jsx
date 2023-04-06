@@ -14,7 +14,7 @@ const Button = styled.button`
     font-family: inherit;
     font-size: 0.85rem;
     color: white;
-    transition: hover 0.5s ease;
+    transition: all 0.4s ease;
     background-color: #1c1c1c;
     box-shadow: 0 0px 5px -1px #fff;
     cursor: ${({ modalIsOpen }) => (modalIsOpen ? "default" : "pointer")};
