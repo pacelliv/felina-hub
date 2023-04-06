@@ -3,7 +3,7 @@ import { createContext, useState } from "react"
 const ThemeContext = createContext()
 
 const ThemeContextProvider = ({ children }) => {
-    const [isOpen, setIsOpen] = useState(true)
+    const [isOpen, setIsOpen] = useState(false)
 
     return (
         <ThemeContext.Provider value={{ isOpen, setIsOpen }}>
